@@ -15,7 +15,7 @@
             font-family: Arial, sans-serif;
             position: relative;
         }
-        .chat-container, .video-container {
+        .chat-container {
             display: none;
             width: 300px;
             height: 400px;
@@ -33,13 +33,13 @@
             bottom: 20px;
         }
         #videoCallContainer {
-            display: none; /* Inicia oculto */
-            position: absolute; 
+            display: none;
+            position: absolute;
             top: 20px;
             left: 50%;
             transform: translateX(-50%);
             width: 80%;
-            height: 400px; 
+            height: 400px;
             background-color: #f0f0f0;
             border: 2px solid #ccc;
             border-radius: 8px;
@@ -52,7 +52,7 @@
     <map name="image-map">
         <area target="" alt="Abrir Chat" title="Abrir Chat" href="javascript:void(0);" coords="400,305,435,339" shape="rect" onclick="toggleChat();">
         <area target="" alt="Iniciar Videochamada" title="Iniciar Videochamada" href="javascript:void(0);" coords="393,516,420,578" shape="rect" onclick="startVideoCall();">
-        <area target="" alt="Abrir Novo Chat" title="Abrir Chat" href="javascript:void(0);" coords="461,301,499,338" shape="rect" onclick="toggleNewChat();">
+        <area target="" alt="Abrir Novo Chat" title="Abrir Novo Chat" href="javascript:void(0);" coords="461,301,499,338" shape="rect" onclick="toggleNewChat();">
     </map>
 
     <div id="chatContainer" class="chat-container">
@@ -61,88 +61,54 @@
     <div id="newChatContainer" class="chat-container">
         <iframe src="https://chat-firebase-3dce6.web.app/" width="100%" height="100%" frameborder="0"></iframe>
     </div>
-   <!DOCTYPE html>
-<html lang="pt-BR">
-<head>
-    <!DOCTYPE html>
-    <html lang="pt-BR">
-    <head>
-        <meta charset="UTF-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <title>Reunião com Jitsi</title>
-        <style>
-            body {
-                display: flex;
-                justify-content: center;
-                align-items: center;
-                height: 100vh;
-                margin: 0;
-                font-family: Arial, sans-serif;
-                background-color: #f0f0f0;
-            }
-            #videoCallContainer {
-                display: none;
-                width: 80%;
-                height: 500px;
-                border: 2px solid #ccc;
-                border-radius: 8px;
-                overflow: hidden;
-                background-color: #fff;
-            }
-        </style>
-    </head>
-    <body>
-        <button onclick="startVideoCall()">Iniciar Videochamada</button>
-        <div id="videoCallContainer">
-            <div id="jitsiContainer" style="width: 100%; height: 100%;"></div>
-            <button onclick="endVideoCall()" style="position: absolute; top: 10px; right: 10px;">Encerrar Chamada</button>
-        </div>
     
-        <script src="https://meet.jit.si/external_api.js"></script>
-        <script>
-            let api = null; // Variável para armazenar a instância da API
-    
-            function startVideoCall() {
-                const videoContainer = document.getElementById("videoCallContainer");
-                videoContainer.style.display = "block";
-    
-                // Definindo o domínio e as opções da chamada
-                const domain = "meet.jit.si";
-                const options = {
-                    roomName: "Sala_" + Math.floor(Math.random() * 1000), // Nome único da sala
-                    parentNode: document.getElementById("jitsiContainer"),
-                    configOverwrite: {
-                        startWithVideoMuted: false,
-                        startWithAudioMuted: false,
-                        enableWelcomePage: false
-                    },
-                    interfaceConfigOverwrite: {
-                        SHOW_JITSI_WATERMARK: false,
-                        DEFAULT_BACKGROUND: "#3b5998"
-                    },
-                    userInfo: {
-                        displayName: "Participante " + Math.floor(Math.random() * 100)
-                    }
-                };
-    
-                try {
-                    // Instanciando a API Jitsi
-                    api = new JitsiMeetExternalAPI(domain, options);
-                    api.executeCommand('displayName', options.userInfo.displayName);
-                } catch (error) {
-                    console.error("Erro ao inicializar o Jitsi Meet:", error);
-                    alert("Falha ao iniciar a videochamada. Verifique a conexão com o Jitsi.");
+    <div id="videoCallContainer">
+        <div id="jitsiContainer" style="width: 100%; height: 100%;"></div>
+        <button onclick="endVideoCall()" style="position: absolute; top: 10px; right: 10px;">Encerrar Chamada</button>
+    </div>
+
+    <script src="https://meet.jit.si/external_api.js"></script>
+    <script>
+        let api = null;
+
+        function toggleChat() {
+            const chat = document.getElementById("chatContainer");
+            chat.style.display = chat.style.display === "none" ? "block" : "none";
+        }
+
+        function toggleNewChat() {
+            const newChat = document.getElementById("newChatContainer");
+            newChat.style.display = newChat.style.display === "none" ? "block" : "none";
+        }
+
+        function startVideoCall() {
+            const videoContainer = document.getElementById("videoCallContainer");
+            videoContainer.style.display = "block";
+
+            const domain = "meet.jit.si";
+            const options = {
+                roomName: "Sala_" + Math.floor(Math.random() * 1000),
+                parentNode: document.getElementById("jitsiContainer"),
+                configOverwrite: {
+                    startWithVideoMuted: false,
+                    startWithAudioMuted: false,
+                    enableWelcomePage: false
+                },
+                interfaceConfigOverwrite: {
+                    SHOW_JITSI_WATERMARK: false
                 }
+            };
+
+            api = new JitsiMeetExternalAPI(domain, options);
+        }
+
+        function endVideoCall() {
+            if (api) {
+                api.dispose();
+                api = null;
             }
-    
-            function endVideoCall() {
-                if (api) {
-                    api.dispose(); // Destrói a instância da chamada para limpar os recursos
-                    api = null;
-                }
-                document.getElementById("videoCallContainer").style.display = "none"; // Esconde o contêiner de videochamada
-            }
-        </script>
-    </body>
-    </html>
-    
+            document.getElementById("videoCallContainer").style.display = "none";
+        }
+    </script>
+</body>
+</html>
