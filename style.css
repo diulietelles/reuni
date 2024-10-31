@@ -1,0 +1,11 @@
+.video-container {
+    position: fixed; /* Permite que o contêiner fique fixo na tela */
+    right: 20px; /* Distância do lado direito */
+    bottom: 20px; /* Distância do fundo da tela */
+    width: 300px; /* Largura do contêiner da videochamada */
+    height: 400px; /* Altura do contêiner da videochamada */
+    border: 1px solid #ccc; /* Borda para o contêiner */
+    background-color: white; /* Fundo branco para o contêiner */
+    z-index: 1000; /* Garante que o contêiner fique acima de outros elementos */
+    display: none; /* Começa oculto */
+}
